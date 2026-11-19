@@ -1,28 +1,33 @@
 import { useState, useEffect } from 'react';
 
-export default function Reviews() {
-  const [reviews, setReviews] = useState([]);
+export default function Footer() {
+  const [sysInfo, setSysInfo] = useState({ os: '', browser: '' });
 
   useEffect(() => {
-    // Запит на отримання коментарів (варіант 2)
-    fetch('https://jsonplaceholder.typicode.com/posts/2/comments')
-      .then(response => response.json())
-      .then(data => setReviews(data))
-      .catch(error => console.error('Помилка:', error));
+    const info = {
+      os: navigator.platform,
+      browser: navigator.userAgent
+    };
+    // 1. Зберігаємо у localStorage
+    localStorage.setItem('systemInfo', JSON.stringify(info));
+    // 2. Зчитуємо з localStorage і відображаємо
+    const saved = JSON.parse(localStorage.getItem('systemInfo'));
+    setSysInfo(saved);
   }, []);
 
   return (
-    <section className="py-20">
-      <h2 className="text-3xl md:text-5xl font-bold mb-10 tracking-tight">Відгуки клієнтів<span className="text-blue-600">.</span></h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {reviews.map(review => (
-          <div key={review.id} className="p-6 border border-gray-300 dark:border-gray-700 rounded-xl hover:shadow-lg transition-shadow">
-            <h3 className="font-bold text-lg capitalize mb-1">{review.name.substring(0, 30)}...</h3>
-            <p className="text-sm text-blue-600 mb-4">{review.email}</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{review.body}</p>
-          </div>
-        ))}
+    <footer className="max-w-[1260px] mx-auto p-6 border-t border-gray-300 dark:border-gray-700 mt-10">
+      <div className="flex flex-col md:flex-row justify-between gap-6 text-[0.61rem] font-mono text-gray-500 uppercase">
+        <div className="flex flex-col gap-1">
+          <strong className="text-black dark:text-white font-bold text-sm tracking-tight font-sans capitalize">Андрій Антощак</strong>
+          <span>Веброзробник і співзасновник Finita Studio</span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span>Система: {sysInfo.os}</span>
+          <span className="truncate max-w-[200px] md:max-w-[400px]" title={sysInfo.browser}>Браузер: {sysInfo.browser}</span>
+        </div>
+        <span>Львів, Україна · {new Date().getFullYear()}</span>
       </div>
-    </section>
+    </footer>
   );
 }
